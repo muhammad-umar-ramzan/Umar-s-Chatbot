@@ -45,14 +45,12 @@ USER_DETAILS = {
     "job_market": "Saudi Arabian Data Science job market",
 }
 
-
 # Function to translate roles between Gemini-Pro and Streamlit terminology
 def translate_role_for_streamlit(user_role):
     if user_role == "model":
         return "assistant"
     else:
         return user_role
-
 
 # Initialize chat session in Streamlit if not already present
 if "chat_session" not in st.session_state:
@@ -61,37 +59,43 @@ if "chat_session" not in st.session_state:
 # Display the chatbot's title on the page
 st.title(f"🤖 Chat with {USER_DETAILS['name']}'s Bot!")
 
-
-# Function to handle specific user questions about Umar
+# Function to handle specific user questions about Umar and the model
 def handle_user_query(user_prompt):
     user_prompt_lower = user_prompt.lower()
 
     # Responses related to Umar
     umar_related_patterns = [
         ("who is umar", f"Umar is my creator."),
-        (
-        "tell me about umar", f"Umar is my creator, a {USER_DETAILS['education']} focused on {USER_DETAILS['field']}."),
-        ("what is umar's background",
-         f"Umar is a {USER_DETAILS['education']} with a focus on {USER_DETAILS['field']} and has experience in {', '.join(USER_DETAILS['internships'])}."),
+        ("tell me about umar", f"Umar is my creator, a {USER_DETAILS['education']} focused on {USER_DETAILS['field']}."),
+        ("what is umar's background", f"Umar is a {USER_DETAILS['education']} with a focus on {USER_DETAILS['field']} and has experience in {', '.join(USER_DETAILS['internships'])}."),
         ("who created you", f"Umar is my owner."),
         ("who is the owner of this bot", f"Umar is my owner."),
-        ("what do you know about umar",
-         f"Umar is my creator, a {USER_DETAILS['education']} specializing in {USER_DETAILS['field']}. He has worked on various data science projects and has expertise in {', '.join(USER_DETAILS['skills'])}."),
+        ("what do you know about umar", f"Umar is my creator, a {USER_DETAILS['education']} specializing in {USER_DETAILS['field']}. He has worked on various data science projects and has expertise in {', '.join(USER_DETAILS['skills'])}."),
         ("what is umar's job market", f"Umar is targeting the {USER_DETAILS['job_market']}."),
         ("what are umar's skills", f"Umar has skills in {', '.join(USER_DETAILS['skills'])}."),
         ("what are umar's projects", f"Umar has worked on projects such as {', '.join(USER_DETAILS['projects'])}."),
         ("where is umar from", f"Umar is from {USER_DETAILS['location']}."),
-        ("tell me more about umar",
-         f"Umar is a {USER_DETAILS['education']} with expertise in {USER_DETAILS['field']}. He has interned at {', '.join(USER_DETAILS['internships'])} and worked on projects like {', '.join(USER_DETAILS['projects'])}. Umar's skills include {', '.join(USER_DETAILS['skills'])}, and he is interested in Data Science and Machine Learning. Umar is currently targeting job opportunities in the {USER_DETAILS['job_market']} and is based in {USER_DETAILS['location']}."),
+        ("tell me more about umar", f"Umar is a {USER_DETAILS['education']} with expertise in {USER_DETAILS['field']}. He has interned at {', '.join(USER_DETAILS['internships'])} and worked on projects like {', '.join(USER_DETAILS['projects'])}. Umar's skills include {', '.join(USER_DETAILS['skills'])}, and he is interested in Data Science and Machine Learning. Umar is currently targeting job opportunities in the {USER_DETAILS['job_market']} and is based in {USER_DETAILS['location']}."),
+    ]
+
+    # Responses related to the bot (model)
+    bot_related_patterns = [
+        ("who are you", f"I am Umar's AI assistant, built to answer questions and assist with information about Umar."),
+        ("what is your name", f"My name is Umar's Bot."),
+        ("how can you assist me", f"I can help you by answering questions about Umar, his background, and his work. Feel free to ask me anything!"),
+        ("who invented you", f"I was created by Umar, a {USER_DETAILS['education']} student specializing in Data Science and Machine Learning."),
+        ("what can you do", f"I can assist with answering questions about Umar, his projects, his skills, and much more. I'm here to help!"),
+        ("what do you know about yourself", f"I am an AI assistant created by Umar to assist with inquiries about him and his work."),
+        ("tell me about yourself", f"I am a chatbot designed to interact with users and provide information about my creator, Umar. I use advanced AI models to provide helpful responses."),
+        ("what is your purpose", f"My purpose is to provide information about my creator, Umar, and assist with any inquiries you have related to him and his work."),
     ]
 
     # Loop through patterns and return matched response
-    for pattern, response in umar_related_patterns:
+    for pattern, response in umar_related_patterns + bot_related_patterns:
         if re.search(pattern, user_prompt_lower):
             return response
 
     return None
-
 
 # Display the chat history
 for message in st.session_state.chat_session.history:
