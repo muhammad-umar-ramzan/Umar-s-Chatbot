@@ -11,7 +11,7 @@ load_dotenv()
 st.set_page_config(
     page_title="Chat with Umar's Bot!",
     page_icon=":brain:",  # Favicon emoji
-    layout="wide",  # Layout option changed to wide for better spacing
+    layout="centered",  # Page layout option
 )
 
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
@@ -58,78 +58,9 @@ def translate_role_for_streamlit(user_role):
 if "chat_session" not in st.session_state:
     st.session_state.chat_session = model.start_chat(history=[])
 
-# Custom CSS for styling
-st.markdown("""
-    <style>
-        .stButton > button {
-            background-color: #2196F3;
-            color: white;
-            border-radius: 12px;
-            height: 40px;
-            font-size: 16px;
-            width: 200px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, background-color 0.3s ease;
-        }
-
-        .stButton > button:hover {
-            transform: scale(1.05);
-            background-color: #0D47A1;
-        }
-
-        .stChatMessage {
-            padding: 15px;
-            background-color: #E3F2FD;
-            border-radius: 12px;
-            margin-bottom: 12px;
-        }
-
-        .stChatMessage.assistant {
-            background-color: #C8E6C9;
-        }
-
-        .stChatMessage.user {
-            background-color: #BBDEFB;
-        }
-
-        .stTitle {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #2196F3;
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .stTextInput input {
-            border-radius: 12px;
-            padding: 10px;
-            font-size: 16px;
-            border: 2px solid #2196F3;
-            margin-top: 20px;
-        }
-
-        .stTextInput input:focus {
-            border-color: #0D47A1;
-        }
-
-        .stChatMessage p {
-            font-size: 18px;
-            color: #555;
-        }
-
-        .stChatMessage .user p {
-            text-align: right;
-        }
-
-        .stChatMessage .assistant p {
-            text-align: left;
-        }
-
-    </style>
-""", unsafe_allow_html=True)
-
 # Display the chatbot's title on the page
 st.title(f"🤖 Chat with {USER_DETAILS['name']}'s Bot!")
+
 
 # Function to handle specific user questions about Umar
 def handle_user_query(user_prompt):
@@ -165,29 +96,24 @@ def handle_user_query(user_prompt):
 # Display the chat history
 for message in st.session_state.chat_session.history:
     with st.chat_message(translate_role_for_streamlit(message.role)):
-        st.markdown(f"<p>{message.parts[0].text}</p>", unsafe_allow_html=True)
+        st.markdown(message.parts[0].text)
 
 # Input field for user's message
 user_prompt = st.chat_input("Ask Umar's Bot...")
 if user_prompt:
     # Add user's message to chat and display it
-    st.chat_message("user").markdown(f"<p>{user_prompt}</p>", unsafe_allow_html=True)
+    st.chat_message("user").markdown(user_prompt)
 
     # Handle predefined queries
     predefined_response = handle_user_query(user_prompt)
     if predefined_response:
         # Display the predefined response
         with st.chat_message("assistant"):
-            st.markdown(f"<p>{predefined_response}</p>", unsafe_allow_html=True)
+            st.markdown(predefined_response)
     else:
         # Send user's message to Gemini-Pro and get the response
         gemini_response = st.session_state.chat_session.send_message(user_prompt)
 
         # Display Gemini-Pro's response
         with st.chat_message("assistant"):
-            st.markdown(f"<p>{gemini_response.text}</p>", unsafe_allow_html=True)
-
-# Optional: Adding a button to clear the chat history
-if st.button("Clear Chat"):
-    st.session_state.chat_session.history = []
-    st.experimental_rerun()
+            st.markdown(gemini_response.text)
