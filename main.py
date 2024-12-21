@@ -56,6 +56,34 @@ def translate_role_for_streamlit(user_role):
 if "chat_session" not in st.session_state:
     st.session_state.chat_session = model.start_chat(history=[])
 
+# Set dark background color using custom CSS
+st.markdown(
+    """
+    <style>
+    body {
+        background-color: #1e1e1e;
+        color: #f1f1f1;
+    }
+    .st-chat-message {
+        background-color: #2a2a2a;
+        color: #f1f1f1;
+    }
+    .st-chat-input input {
+        background-color: #2a2a2a;
+        color: #f1f1f1;
+        border: 1px solid #444;
+    }
+    .st-chat-input input:focus {
+        border-color: #6a6a6a;
+    }
+    .st-chat-message.assistant {
+        background-color: #3a3a3a;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 # Display the chatbot's title on the page
 st.title(f"🤖 Chat with {USER_DETAILS['name']}'s Bot!")
 
